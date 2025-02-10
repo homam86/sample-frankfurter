@@ -7,14 +7,7 @@ namespace Frankfurter.App.Contracts;
 public class ForexHistoryRequest
 {
     [Required]
-    [RegularExpression(@"^\d{4}-\d{2}-\d{2}$", ErrorMessage = "The startDate must be in the format YYYY-mm-dd.")]
-    public string StartDate { get; set; } = string.Empty;
+    public DateOnly StartDate { get; set; } 
 
-    [RegularExpression(@"^\d{4}-\d{2}-\d{2}$", ErrorMessage = "The endDate must be in the format YYYY-mm-dd.")]
-    public string? EndDate { get; set; }
-
-    public string GetDateRange()
-    {
-        return StartDate + ".." + (EndDate ?? "");
-    }
+    public DateOnly? EndDate { get; set; }
 }

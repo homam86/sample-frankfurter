@@ -11,6 +11,8 @@ public static class Extensions
         services.AddRefitClient<IFrankfurterApiClient>()
             .ConfigureHttpClient(c => c.BaseAddress = new Uri(BaseUrl));
 
+        services.AddScoped<IFrankfurterApiService, FrankfurterApiService>();
+
         return services;
     }
 }

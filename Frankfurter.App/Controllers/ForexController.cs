@@ -13,20 +13,20 @@ public class ForexController : ControllerBase
     private static readonly string[] BannedCurrencies = ["TRY", "PLN", "THB", "MXN"];
 
     private readonly ILogger<ForexController> _logger;
-    private readonly IFrankfurterApiClient _frankfurterApiClient;
+    private readonly IFrankfurterApiService _frankfurterApiService;
 
     public ForexController(ILogger<ForexController> logger,
-        IFrankfurterApiClient frankfurterApiClient)
+        IFrankfurterApiService frankfurterApiService)
     {
         _logger = logger;
-        _frankfurterApiClient = frankfurterApiClient;
+        _frankfurterApiService = frankfurterApiService;
     }
 
     [HttpGet("{currency}")]
     [OutputCache(PolicyName = PolicyNames.Default)]
     public async Task<ForexResponse> GetAsync(string currency)
     {
-        var result = await _frankfurterApiClient.GetLatestRatesAsync(currency);
+        var result = await _frankfurterApiService.GetRateAsync(currency, []);
         return result;
     }
 
@@ -45,7 +45,7 @@ public class ForexController : ControllerBase
             return BadRequest("Amount must be greater than 0");
         }
 
-        var result = await _frankfurterApiClient.GetLatestRatesAsync(src, dst);
+        var result = await _frankfurterApiService.GetRateAsync(src, [dst]);
         if (!result.Rates.ContainsKey(dst))
         {
             return StatusCode((int)HttpStatusCode.BadGateway, "Destination currency not found.");
@@ -59,8 +59,7 @@ public class ForexController : ControllerBase
     public async Task<ActionResult<ForexResponse>> GetHistoryAsync(string currency, [FromQuery] ForexHistoryRequest request)
     {
         // TODO: Add pagination
-        var dateRange = request.GetDateRange();
-        var result = await _frankfurterApiClient.GetHistoricalRatesAsync(currency, dateRange);
+        var result = await _frankfurterApiService.GetHistoryAsync(currency, request.StartDate, request.EndDate, []);
 
         return Ok(result);
     }

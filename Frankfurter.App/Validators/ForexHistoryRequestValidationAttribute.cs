@@ -5,10 +5,10 @@ namespace Frankfurter.App.Validators;
 
 public class ForexHistoryRequestValidationAttribute : ValidationAttribute
 {
-    protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         var model = (ForexHistoryRequest)validationContext.ObjectInstance;
-        if (!string.IsNullOrEmpty(model.EndDate) && string.Compare(model.StartDate, model.EndDate) >= 0)
+        if (model.EndDate.HasValue && model.StartDate > model.EndDate)
         {
             return new ValidationResult("StartDate must be earlier than EndDate.");
         }
