@@ -10,7 +10,10 @@ public interface IFrankfurterApiClient
         [AliasAs("symbols")] string? symbols = null /*e.g: CHF,GBP*/
     );
 
-    [Get("/{date}")]
-    Task<ForexResponse> GetHistoricalRatesAsync(string date);
+    [Get("/{dateRange}")]
+    Task<ForexResponseByDate> GetHistoricalRatesAsync([AliasAs("base")] string baseCurrency,
+        string dateRange,
+        string? symbols = null /*e.g: CHF,GBP*/
+    );
 
 }

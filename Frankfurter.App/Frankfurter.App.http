@@ -4,13 +4,19 @@ GET {{HostAddress}}/forex/eur
 Accept: application/json
 
 ###
-
 GET {{HostAddress}}/forex/eur/aud
 Accept: application/json
 
 ###
-
 GET {{HostAddress}}/forex/eur/try
+Accept: application/json
+
+###
+GET {{HostAddress}}/forex/eur/history/2025-02-08
+Accept: application/json
+
+###
+GET {{HostAddress}}/forex/eur/history/2025-02-08/2025-02-10
 Accept: application/json
 
 ###

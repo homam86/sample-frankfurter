@@ -45,6 +45,15 @@ public class ForexController : ControllerBase
         return Ok(result.Rates[dst]);
     }
 
+    [HttpGet("{currency}/history/{startDate:regex(^\\d{{4}}-\\d{{2}}-\\d{{2}}$)}/{endDate:regex(^\\d{{4}}-\\d{{2}}-\\d{{2}}$)?}")]
+    public async Task<ActionResult<ForexResponse>> GetHistoryAsync(string currency, string startDate, string? endDate)
+    {
+        var date = startDate + ".." + endDate;
+        var result = await _frankfurterApiClient.GetHistoricalRatesAsync(currency, date);
+
+        return Ok(result);
+    }
+
     private static bool IsBannedCurrency(string currency)
     {
         currency = currency.ToUpper();
