@@ -1,6 +1,11 @@
-@Frankfurter.App_HostAddress = http://localhost:5133
+@HostAddress = http://localhost:5133
 
-GET {{Frankfurter.App_HostAddress}}/forex/eur
+GET {{HostAddress}}/forex/eur
+Accept: application/json
+
+###
+
+GET {{HostAddress}}/forex/eur/aud
 Accept: application/json
 
 ###
