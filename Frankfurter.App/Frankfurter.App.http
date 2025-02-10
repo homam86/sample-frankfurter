@@ -9,3 +9,8 @@ GET {{HostAddress}}/forex/eur/aud
 Accept: application/json
 
 ###
+
+GET {{HostAddress}}/forex/eur/try
+Accept: application/json
+
+###

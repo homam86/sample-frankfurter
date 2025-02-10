@@ -8,6 +8,8 @@ namespace Frankfurter.App.Controllers;
 [Route("[controller]")]
 public class ForexController : ControllerBase
 {
+    private static readonly string[] BannedCurrencies = ["TRY", "PLN", "THB", "MXN"];
+
     private readonly ILogger<ForexController> _logger;
     private readonly IFrankfurterApiClient _frankfurterApiClient;
 
@@ -29,6 +31,11 @@ public class ForexController : ControllerBase
     public async Task<ActionResult<decimal>> GetExchangeAsync(string src, string dst)
     {
         dst = dst.ToUpper();
+        if(IsBannedCurrency(dst))
+        {
+            return BadRequest($"Currency '{dst}' is not supported");
+        }
+
         var result = await _frankfurterApiClient.GetLatestRatesAsync(src, dst);
         if (!result.Rates.ContainsKey(dst))
         {
@@ -36,5 +43,11 @@ public class ForexController : ControllerBase
         }
 
         return Ok(result.Rates[dst]);
+    }
+
+    private static bool IsBannedCurrency(string currency)
+    {
+        currency = currency.ToUpper();
+        return BannedCurrencies.Contains(currency);
     }
 }
