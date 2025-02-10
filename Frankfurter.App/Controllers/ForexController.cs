@@ -1,11 +1,12 @@
 using Frankfurter.Api;
+using Frankfurter.App.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace Frankfurter.App.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("forex")]
 public class ForexController : ControllerBase
 {
     private static readonly string[] BannedCurrencies = ["TRY", "PLN", "THB", "MXN"];
@@ -26,14 +27,19 @@ public class ForexController : ControllerBase
         var result = await _frankfurterApiClient.GetLatestRatesAsync(currency);
         return result;
     }
-    
-    [HttpGet("{src}/{dst}")]
-    public async Task<ActionResult<decimal>> GetExchangeAsync(string src, string dst)
+
+    [HttpGet("{src}/convert/{dst}")]
+    public async Task<ActionResult<decimal>> GetExchangeAsync(string src, string dst, [FromQuery] decimal amount = 1)
     {
         dst = dst.ToUpper();
-        if(IsBannedCurrency(dst))
+        if (IsBannedCurrency(dst))
         {
             return BadRequest($"Currency '{dst}' is not supported");
+        }
+
+        if (amount <= 0)
+        {
+            return BadRequest("Amount must be greater than 0");
         }
 
         var result = await _frankfurterApiClient.GetLatestRatesAsync(src, dst);
@@ -42,14 +48,15 @@ public class ForexController : ControllerBase
             return StatusCode((int)HttpStatusCode.BadGateway, "Destination currency not found.");
         }
 
-        return Ok(result.Rates[dst]);
+        return Ok(result.Rates[dst] * amount);
     }
 
-    [HttpGet("{currency}/history/{startDate:regex(^\\d{{4}}-\\d{{2}}-\\d{{2}}$)}/{endDate:regex(^\\d{{4}}-\\d{{2}}-\\d{{2}}$)?}")]
-    public async Task<ActionResult<ForexResponse>> GetHistoryAsync(string currency, string startDate, string? endDate)
+    [HttpGet("{currency}/history")]
+    public async Task<ActionResult<ForexResponse>> GetHistoryAsync(string currency, [FromQuery] ForexHistoryRequest request)
     {
-        var date = startDate + ".." + endDate;
-        var result = await _frankfurterApiClient.GetHistoricalRatesAsync(currency, date);
+        // TODO: Add pagination
+        var dateRange = request.GetDateRange();
+        var result = await _frankfurterApiClient.GetHistoricalRatesAsync(currency, dateRange);
 
         return Ok(result);
     }

@@ -4,19 +4,27 @@ GET {{HostAddress}}/forex/eur
 Accept: application/json
 
 ###
-GET {{HostAddress}}/forex/eur/aud
+GET {{HostAddress}}/forex/usd/convert/aud
 Accept: application/json
 
 ###
-GET {{HostAddress}}/forex/eur/try
+GET {{HostAddress}}/forex/eur/convert/aud?amount=1000
 Accept: application/json
 
 ###
-GET {{HostAddress}}/forex/eur/history/2025-02-08
+GET {{HostAddress}}/forex/eur/convert/try
 Accept: application/json
 
 ###
-GET {{HostAddress}}/forex/eur/history/2025-02-08/2025-02-10
+GET {{HostAddress}}/forex/eur/history?startDate=2025-02-08
+Accept: application/json
+
+###
+GET {{HostAddress}}/forex/eur/history?startDate=2025-02-07&endDate=2025-02-10
+Accept: application/json
+
+###
+GET {{HostAddress}}/forex/eur/history?startDate=2025-02-07&endDate=2025-02-01
 Accept: application/json
 
 ###
