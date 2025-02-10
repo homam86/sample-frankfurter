@@ -1,6 +1,7 @@
 using Frankfurter.Api;
 using Frankfurter.App.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using System.Net;
 
 namespace Frankfurter.App.Controllers;
@@ -22,6 +23,7 @@ public class ForexController : ControllerBase
     }
 
     [HttpGet("{currency}")]
+    [OutputCache(PolicyName = PolicyNames.Default)]
     public async Task<ForexResponse> GetAsync(string currency)
     {
         var result = await _frankfurterApiClient.GetLatestRatesAsync(currency);
@@ -29,6 +31,7 @@ public class ForexController : ControllerBase
     }
 
     [HttpGet("{src}/convert/{dst}")]
+    [OutputCache(PolicyName = PolicyNames.Default)]
     public async Task<ActionResult<decimal>> GetExchangeAsync(string src, string dst, [FromQuery] decimal amount = 1)
     {
         dst = dst.ToUpper();
@@ -52,6 +55,7 @@ public class ForexController : ControllerBase
     }
 
     [HttpGet("{currency}/history")]
+    [OutputCache(PolicyName = PolicyNames.Default)]
     public async Task<ActionResult<ForexResponse>> GetHistoryAsync(string currency, [FromQuery] ForexHistoryRequest request)
     {
         // TODO: Add pagination
