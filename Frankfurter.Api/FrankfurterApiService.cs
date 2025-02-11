@@ -19,6 +19,14 @@ public class FrankfurterApiService : IFrankfurterApiService
         _logger = logger;
         _client = client;
 
+        /**
+         *  We can add global resilience policies in Program.cs
+         *  builder.Services.ConfigureHttpClientDefaults(http =>
+         *  {
+         *      http.AddStandardResilienceHandler();
+         *  });
+         */
+
         _retryPolicy = Policy
             .Handle<Exception>()
             .WaitAndRetryAsync(
